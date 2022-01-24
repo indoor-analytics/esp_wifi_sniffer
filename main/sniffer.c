@@ -1,9 +1,9 @@
 /**
  * Copyright (c) 2017, Łukasz Marcin Podkalicki <lpodkalicki@gmail.com>
- * ESP32/016
- * WiFi Sniffer.
- * 
+ * ESP32/016 WiFi Sniffer
  * https://github.com/lpodkalicki/blog/tree/master/esp32/016_wifi_sniffer
+ * 
+ * (original code has been modified)
  */
 
 #include "freertos/FreeRTOS.h"
@@ -11,7 +11,6 @@
 #include "esp_wifi_types.h"
 #include "esp_system.h"
 #include "esp_event.h"
-#include "esp_event_loop.h"
 #include "nvs_flash.h"
 #include "driver/gpio.h"
 
@@ -36,7 +35,6 @@ typedef struct {
 	uint8_t payload[0]; /* network data ended with 4 bytes csum (CRC32) */
 } wifi_ieee80211_packet_t;
 
-static esp_err_t event_handler(void *ctx, system_event_t *event);
 static void wifi_sniffer_init(void);
 static void wifi_sniffer_set_channel(uint8_t channel);
 static const char *wifi_sniffer_packet_type2str(wifi_promiscuous_pkt_type_t type);
@@ -60,20 +58,12 @@ start_sniffing(void)
     	}
 }
 
-esp_err_t
-event_handler(void *ctx, system_event_t *event)
-{
-	
-	return ESP_OK;
-}
-
 void
 wifi_sniffer_init(void)
 {
 
 	nvs_flash_init();
-    	tcpip_adapter_init();
-    	ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
+    	esp_netif_init();
     	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
 	ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
 	ESP_ERROR_CHECK( esp_wifi_set_country(&wifi_country) ); /* set country for channel range [1, 13] */
