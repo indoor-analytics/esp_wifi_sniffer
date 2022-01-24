@@ -61,15 +61,14 @@ start_sniffing(void)
 void
 wifi_sniffer_init(void)
 {
-
 	nvs_flash_init();
-    	esp_netif_init();
-    	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+	esp_netif_init();
+	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
 	ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
 	ESP_ERROR_CHECK( esp_wifi_set_country(&wifi_country) ); /* set country for channel range [1, 13] */
 	ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_RAM) );
-    	ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_NULL) );
-    	ESP_ERROR_CHECK( esp_wifi_start() );
+	ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_NULL) );
+	ESP_ERROR_CHECK( esp_wifi_start() );
 	esp_wifi_set_promiscuous(true);
 	esp_wifi_set_promiscuous_rx_cb(&wifi_sniffer_packet_handler);
 }
@@ -77,7 +76,6 @@ wifi_sniffer_init(void)
 void
 wifi_sniffer_set_channel(uint8_t channel)
 {
-	
 	esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
 }
 
@@ -95,7 +93,6 @@ wifi_sniffer_packet_type2str(wifi_promiscuous_pkt_type_t type)
 void
 wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type)
 {
-
 	if (type != WIFI_PKT_MGMT)
 		return;
 
